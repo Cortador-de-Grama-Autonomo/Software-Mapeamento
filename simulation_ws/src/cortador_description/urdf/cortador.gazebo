@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+  <xacro:include filename="$(find cortador_description)/urdf/parameter.xacro" />
+  <xacro:include filename="$(find cortador_description)/urdf/macros.xacro" />
+  
+  <!-- Differential Drive controller from Gazebo -->
+  <gazebo>
+   <plugin filename="libgazebo_ros_diff_drive.so" name="differential_drive_controller">
+      <legacyMode>false</legacyMode>
+      <alwaysOn>true</alwaysOn>
+      <updateRate>20</updateRate>
+      <leftJoint>left_wheel_hinge</leftJoint>
+      <rightJoint>right_wheel_hinge</rightJoint>
+      <wheelSeparation>0.8</wheelSeparation>
+      <wheelDiameter>0.215</wheelDiameter>
+      <torque>10</torque>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>gazebo_odom</odometryTopic>
+      <odometryFrame>odom_link</odometryFrame>
+      <robotBaseFrame>chassis</robotBaseFrame>
+    </plugin>
+  </gazebo>
+  <!--Laser Plugin-->
+  <gazebo reference="sensor_laser">
+    <sensor type="ray" name="head_hokuyo_sensor">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>20</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>20</samples>
+            <resolution>1</resolution>
+            <min_angle>-0.09722</min_angle>
+            <max_angle>0.09722</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.10</min>
+          <max>2.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+        <topicName>/cortador/laser/scan</topicName>
+        <frameName>sensor_laser</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <!-- Camera sensor plugins -->
+  <gazebo reference="camera_link_mid">
+	<xacro:sensor_plugin_macro name="camera_mid" topic_name="image_raw" info_name="camera_info" frame_name="camera_link_mid"/>
+  </gazebo>
+  
+  <gazebo reference="camera_link_left">
+    <xacro:sensor_plugin_macro name="camera_left" topic_name="image_raw" info_name="camera_info" frame_name="camera_link_left"/>
+  </gazebo>
+  
+  <gazebo reference="camera_link_right">
+    <xacro:sensor_plugin_macro name="camera_right" topic_name="image_raw" info_name="camera_info" frame_name="camera_link_right"/>
+  </gazebo>
+  
+  <!-- Chassis color -->
+  <gazebo reference="chassis">
+      <material>Gazebo/Green</material>
+  </gazebo>
+   <gazebo reference="left_wheel">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="right_wheel">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+
+</robot>
