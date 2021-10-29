@@ -12,6 +12,10 @@ def clbk_laser(msg):
     front = min(min(msg.ranges[0:20]), 2)
     take_action(front)
 
+def clbk_laser_2(msg):
+    front = min(min(msg.ranges[0:40]), 2)
+    rospy.loginfo(front)
+
 
 def take_action(front):
     msg = Twist()
@@ -27,7 +31,7 @@ def take_action(front):
     elif front < 2:
         state_description = 'case 2 - obstáculo a frente'
         linear_x = 0
-        angular_z = 1.0
+        angular_z = 1.5
     else:
         state_description = 'não identificado'
         rospy.loginfo(front)
@@ -47,6 +51,10 @@ def main():
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
 
     sub = rospy.Subscriber('/cortador/laser/scan', LaserScan, clbk_laser)
+
+    sub_r = rospy.Subscriber('/cortador/laser/scan_right', LaserScan, clbk_laser_2)
+
+    sub_l = rospy.Subscriber('/cortador/laser/scan_left', LaserScan, clbk_laser_2)
 
     rospy.spin()
 
