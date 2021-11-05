@@ -37,9 +37,9 @@
     </inertial>
   </xacro:macro>
   
-  <xacro:macro name="sensor_joint_macro" params="x y z l parent_link child_link">
+  <xacro:macro name="sensor_joint_macro" params="x y z l parent_link child_link a b c">
 	<axis xyz="0 0 0" />
-    <origin xyz="${x} ${y} ${z}" rpy="0 1.57 0"/>
+    <origin xyz="${x} ${y} ${z}" rpy="${b} ${a} ${c}"/>
     <parent link="${parent_link}"/>
     <child link="${child_link}"/>
   </xacro:macro>

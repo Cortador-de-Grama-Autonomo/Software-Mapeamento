@@ -58,6 +58,7 @@
     </visual>
   </link>
   
+   
   <link name="sensor_laser">
     <inertial>
         <origin xyz="0 0 0" rpy="0 0 0" />
@@ -85,7 +86,7 @@
 	    <origin xyz="${x_chassis/2} 0 ${z_chassis/2}" rpy="0 0 0"/>
 	    <parent link="chassis"/>
 	    <child link="sensor_laser"/>
-    </joint>
+    </joint> 
    <!-- Add an odom link -->
   <link name="odom_link" >
 	<collision>
@@ -107,16 +108,26 @@
     <child link="odom_link"/>
   </joint>
   
-  
-  
-  
+  <link name="sensor_link_right">
+    <xacro:sensor_link_macro l="${l_camera}"/>
+  </link>
+  <joint name="sensor_joint_right" type="fixed">
+    <xacro:sensor_joint_macro x="0" y="-0.7" z="${z_chassis/2}" l="${l_camera}" parent_link="chassis" child_link="sensor_link_right" a="0" b="0" c="-1.57"/>
+  </joint>
+ 
+   <link name="sensor_link_left">
+    <xacro:sensor_link_macro l="${l_camera}"/>
+  </link>
+  <joint name="sensor_joint_left" type="fixed">
+    <xacro:sensor_joint_macro x="0" y="0.7" z="${z_chassis/2}" l="${l_camera}" parent_link="chassis" child_link="sensor_link_left" a="0" b="0" c="1.57"/>
+  </joint>
   <!-- Chlorophyllsensors -->
 <!--<xacro:if value="${$(arg prefix) == 1}">-->
 	<link name="camera_link_mid">
 		<xacro:sensor_link_macro l="${l_camera}"/>
 	</link>
 	<joint name="camera_joint_mid" type="fixed">
-		<xacro:sensor_joint_macro x="${x_chassis/2 + l_camera/2}" y="0" z="${-z_chassis/2 + l_camera/2}" l="${l_camera}" parent_link="chassis" child_link="camera_link_mid"/>
+		<xacro:sensor_joint_macro x="${x_chassis/2 + l_camera/2}" y="0" z="${-z_chassis/2 + l_camera/2}" l="${l_camera}" parent_link="chassis" child_link="camera_link_mid" a="1.57" b="0" c="0"/>
 	</joint>
   <!--</xacro:if>-->
   
