@@ -5,45 +5,177 @@ Repositório de Desenvolvimento dos Códigos de Software voltados ao mapeamento 
 
 * [Dependências](#Dependências)
 * [Manual de Instalação](#Manual-de-Instalação)
+* [Estrutura do Projeto](#Estrutura-de-Projeto)
 * [Guia de Contribuição](#Guia-de-Contribuição)
     * [Issues](#Issues)
     * [Branches](#Branches)
     * [Commits](#Commits)
     * [Pull Requests](#Pull-Requests)
 
+
 ## [**Dependências**](#Sumário)
 
 Para a execução local da Wiki do projeto serão necessárias as seguintes dependências:
 
-* [ROS Noetic]()
+* [ROS Noetic](http://wiki.ros.org/noetic/Installation/Ubuntu)
+* [ROS - Pacote Gmapping]()
+* [Python 3](https://www.python.org/downloads/)
 
 ## [**Manual de Instalação**](#Sumário)
 
-### Pacotes:
-* Algoritmos: Implementação dos códigos de PPCR e SLAM.
-* Controle_Locomocao: Implementação do código de controle e dos nós de comunicação para movimento do robô cortador de grama.
-* Controle_Corte:Implementação do código de controle da altura e velocidade do corte da grama.
-* Sensores: Biblioteca de códigos para obtenção de dados dos sensores.
-* worlds: Ambientes para simulação
-* cortador_description: Descrição do cortador para simulação
-
 ### Instalação de Dependências
 
-- Passo 1: Criar um diretório do projeto e fazer o download do repositório
+Para começar a desenvolver o projeto é necessário, antes de mais nada, instalar as dependências do ROS Noetic e do Python. 
+
+#### **Python**
+
+Para instalar o Python é necesário baixar os pacotes de acordo com o presente na [documentação oficial](https://wiki.python.org/moin/BeginnersGuide/Download) da linguagem. Após a instalação correta, pode-se verificar a versão e se a instalação foi realizada corretamente utilizando o seguinte comando:
+
+ ```bash
+  # Executa-se o seguinte comando, esperando o resultado a seguir
+  $ python3 --version
+ ```
+
+ Após a execução do comando anterior, espera-se o seguinte resultado, com possíveis alterações no número da versão a depender da que foi instalada:
+
+ ```bash
+   Python 3.10.0
+ ```
+
+#### **ROS Noetic**
+
+Para instalar o ROS Noetic, recomenda-se uma distribuição Linux com poucas ou nenhuma modificação adicional realizada. Para isso, deve-se seguir a [documentação oficial](http://wiki.ros.org/noetic/Installation/Ubuntu). Na data de elaboração desse manual, os seguintes comandos compunham a instalção referenciada:
+
 ```bash
-  mkdir -p ~/Eletronica-Embarcado/
-  cd ~/Eletronica-Embarcado/
-  git clone https://github.com/Cortador-de-Grama-Autonomo/Eletronica-Embarcado.git
+# Prepara o sistema para aceitar pacotes da organização packages.ros.org
+$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+
+# Instalar o programa curl
+$ sudo apt install curl 
+
+# Setar as Keys paa instalação
+$ curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+
+# Atualizar a versão do dpkg do sistem
+$ sudo apt update
+
+# Instalar a versão Full do ROS Noetic, contendo ferramentas de visualização
+$ sudo apt install ros-noetic-desktop-full
+
+# Exportar o script de uso do ROS (Necessário em TODOS os terminais de uso)
+# O comando pode conter o último parâmetro como 'setup.bash'
+# a depender da versão do terminal
+$ source /opt/ros/noetic/setup.bash
+
+# Dependências e pacotes adicionais
+$ sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+
+# Instalar o rosdep para manejo de dependências
+$ sudo apt install python3-rosdep
+
+# Para inicializar o rosdep
+$ sudo rosdep init
+
+# Para verificar a versão e se a instalação foi bem sucedida
+$ rosdep --version
+``` 
+
+#### **ROS - Pacote de Gmapping**
+
+Para instalar o pacote de visualização das estruturas e dados de mapeamento via ROS, é necessário uma instalação de pacotes adicionais após a instalação dos pacotes do ROS Noetic Full instalados anteriormente, sendo necessário executar:
+
+```bash
+  # Instalação do pacote de gmapping
+  $ sudo apt-get install ros-noetic-gmapping
 ```
 
-- Passo 2: Compilar os workspaces
+### Execução dos Ambientes
+
+Para executar os ambientes no projeto em questão, é necessário realizar a seguinte configuração.
+#### Passo 1: Clone do Repositório
+```bash
+  # Criar uma pasta para armazenamento do projeto
+  $ mkdir Projeto-Cortador-Embarcado
+
+  # Entrar na pasta do projeto
+  $ cd Projeto-Cortador-Embarcado/
+
+  # Realizar o clone do repositório
+  $ git clone https://github.com/Cortador-de-Grama-Autonomo/Software-Mapeamento
+```
+
+Após o projeto estar devidamente adicionado, é necessário executar os comandos para configurar o ambiente onde o desenvolvimento e os testes ocorrerão:
+
+#### Passo 2: Compilar os workspaces
 
 ```bash
-  cd ~/Eletronica-Embarcado/Eletronica-Embarcado/catkin_ws
-  catkin_make
-  cd ~/Eletronica-Embarcado/Eletronica-Embarcado/simulation_ws
-  catkin_make
+  # Entrar no repositório do projeto
+  $ cd ./Projeto-Cortador-Embarcado/Software-Mapeamento
+
+  # Executar o comando para habilitar o uso de funções do ROS
+  # Podendo ser 'setup.bash' a depender da configuração do terminal
+  $ source /opt/ros/noetic/setup.zsh
+
+  # Entrar na pasta 'catkin_ws'
+  $ cd ./catkin_ws
+
+  # Executar o comando de make
+  $ catkin_make
+
+  # Entrar na pasta 'simulation_ws'
+  $ cd ../simulation_ws
+
+  # Executar o comando de make do projeto
+  $ catkin_make
 ```
+
+Os arquivos criados pelos comandos anteriores serão
+
+**Catkin_ws**
+- `catkin_ws/build/`
+- `catkin_ws/devel/`
+
+**Simulation_ws**
+- `smilation_ws/build/`
+- `smilation_ws/devel/`
+
+### Execução
+
+As seguintes etapas e passos podem ser tomadas para realizar o teste da execução do ambiente, com as dependências de visualizações de dados do ROS, como o [Gazebo](http://gazebosim.org/) e o [Rviz](http://wiki.ros.org/rviz)
+
+```bash
+# Executar o ambiente de simulação do Gazebo
+ $ cd simulation_ws
+ $ source devel/setup.zsh
+ $ roslaunch worlds world.launch
+
+# Executar o carro cortador no ambiente do Gazebo
+ $ cd simulation_ws
+ $ source devel/setup.zsh
+ $ roslaunch cortador_description spawn.launch
+
+ # Executar o ambinte de visualização do Rviz
+ $ cd catkin_ws
+ $ source devel/setup.zsh
+ $ roslaunch controle_locomocao gmapping.launch
+
+# Executar o algoritmo necessário
+ $ cd catkin_ws
+ $ source devel/setup.zsh
+ $ rosrun controle_locomocao wall_follow.py
+
+# Para identificar os tópicos do ROS
+ $ rostopic list
+```
+## [**Estrutura do Projeto**](#Sumário)
+
+O Presente projeto contém a seguinte lista de pacotes e diretórios, organizados de forma a contemplar as etapas de desenvolvimento e implementação.
+### **Pacotes:**
+* **Controle_Locomocao:** Implementação do código de controle e dos nós de comunicação para movimento do robô cortador de grama.
+* **Controle_Corte:** Implementação do código de controle da altura e velocidade do corte da grama.
+* **Sensores:** Biblioteca de códigos para obtenção de dados dos sensores.
+* **worlds:** Ambientes para simulação
+* **cortador_description:** Descrição do cortador para simulação
 
 ## [**Guia de Contribuição**](#Sumário)
 
